@@ -43,7 +43,8 @@
       font-family: 'Noto Sans JP', 'Inter', sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
@@ -182,7 +183,7 @@
     }
 
     .stitch-section .value {
-      font-size: clamp(80px, 28vw, 180px);
+      font-size: clamp(60px, min(25vw, 15vh), 180px);
       font-weight: 900;
       color: var(--text-primary);
       line-height: 1;
@@ -567,6 +568,44 @@
       z-index: 50;
       white-space: nowrap;
       text-align: center;
+    }
+
+    /* ===== Media Queries for Small Screens ===== */
+    @media (max-height: 700px) {
+      #app {
+        gap: 6px;
+      }
+      .row-section {
+        padding: 8px 16px;
+      }
+      .row-section .value {
+        font-size: 44px;
+      }
+      .stitch-section .value {
+        font-size: clamp(50px, min(25vw, 12vh), 120px);
+      }
+      .status-btn {
+        padding: 8px 6px;
+      }
+      .ctrl-btn {
+        padding: 10px 8px;
+        font-size: 14px;
+      }
+      .cmd-help {
+        padding: 8px 12px;
+        gap: 6px 12px;
+      }
+      .footer-links {
+        margin-top: 6px;
+      }
+      .footer-link {
+        padding: 8px 4px;
+        font-size: 10px;
+        gap: 2px;
+      }
+      .footer-link span {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
