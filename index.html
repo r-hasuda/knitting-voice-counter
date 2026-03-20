@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="description" content="声だけで操作できるハンズフリー編み物カウンター。段数・目数を音声コマンドで管理できます。">
-  <title>🧶 編み物カウンター - 音声操作</title>
+  <title>🧶 音声編み物カウンター v1.1</title>
   <style>
     /* ===== Reset & Base ===== */
     *,
@@ -308,31 +308,7 @@
       animation: micPulse 1.5s ease-in-out infinite;
     }
 
-    /* ===== Command Help ===== */
-    .cmd-help {
-      margin-top: auto;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid var(--glass-border);
-      border-radius: 12px;
-      padding: 12px 16px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px 16px;
-      font-size: 11px;
-      color: var(--text-secondary);
-    }
 
-    .cmd-row {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .cmd-row span {
-      color: #fff;
-      font-weight: 600;
-      font-size: 12px;
-    }
 
     /* ===== Footer Links ===== */
     .footer-links {
@@ -570,6 +546,157 @@
       text-align: center;
     }
 
+    /* ===== Navi Panel ===== */
+    .navi-panel {
+      background: rgba(20, 20, 50, 0.4);
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      padding: 10px 16px;
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+
+    .navi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navi-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-magenta);
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(255,255,255,0.1);
+      transition: .3s;
+      border-radius: 24px;
+      border: 1px solid var(--glass-border);
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 2px;
+      bottom: 2px;
+      background-color: var(--text-secondary);
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .toggle-slider {
+      background-color: rgba(255, 45, 170, 0.2);
+      border-color: var(--accent-magenta);
+    }
+    input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+      background-color: var(--accent-magenta);
+    }
+
+    .navi-content {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .navi-content.show {
+      display: flex;
+    }
+
+    .navi-pattern-edit {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.3);
+      padding: 6px 8px;
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .navi-btn {
+      background: rgba(255,255,255,0.08);
+      border: none;
+      color: #fff;
+      border-radius: 8px;
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .navi-btn:active { background: rgba(255,255,255,0.2); }
+
+    .navi-pattern-text {
+      font-size: 13px;
+      font-weight: 700;
+      width: 60px;
+      text-align: center;
+    }
+
+    .navi-plus {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin: 0 2px;
+    }
+
+    .navi-type-group {
+      display: flex;
+      background: rgba(0,0,0,0.4);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .navi-type-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 6px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+    }
+    .navi-type-btn.active {
+      background: var(--accent-magenta);
+      color: #fff;
+    }
+
+    .navi-progress {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      background: rgba(255, 45, 170, 0.05);
+      padding: 6px;
+      border-radius: 8px;
+    }
+    .navi-progress span {
+      color: var(--accent-cyan);
+      font-size: 16px;
+      font-weight: 900;
+      margin-left: 6px;
+    }
+
     /* ===== Media Queries for Small Screens ===== */
     @media (max-height: 700px) {
       #app {
@@ -590,10 +717,6 @@
       .ctrl-btn {
         padding: 10px 8px;
         font-size: 14px;
-      }
-      .cmd-help {
-        padding: 8px 12px;
-        gap: 6px 12px;
       }
       .footer-links {
         margin-top: 6px;
@@ -643,6 +766,33 @@
       <div class="tap-hint">タップで次の段へ</div>
     </div>
 
+    <!-- 円編みナビゲーションパネル -->
+    <div class="navi-panel" id="naviPanel">
+      <div class="navi-header">
+        <span class="navi-title">🧶 円編みナビモード</span>
+        <label class="toggle-switch">
+          <input type="checkbox" id="naviToggleBtn">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="navi-content" id="naviContent">
+        <div class="navi-pattern-edit">
+          <button class="navi-btn" id="naviKomaDec">◀</button>
+          <span class="navi-pattern-text" id="naviPatternText">細編み 1</span>
+          <button class="navi-btn" id="naviKomaInc">▶</button>
+          <span class="navi-plus">＋</span>
+          <div class="navi-type-group">
+            <button class="navi-type-btn active" id="naviTypeInc">増</button>
+            <button class="navi-type-btn" id="naviTypeDec">減</button>
+            <button class="navi-type-btn" id="naviTypeNone">平</button>
+          </div>
+        </div>
+        <div class="navi-progress">
+          現在のループ進捗 <span id="naviLoopStatus">1 / 6</span>
+        </div>
+      </div>
+    </div>
+
     <!-- 目数 (Stitch) -->
     <div class="stitch-section" id="stitchSection">
       <div class="label">目　数</div>
@@ -668,15 +818,6 @@
       <button class="ctrl-btn reset-btn" id="resetBtn" type="button">🗑 初期化</button>
     </div>
 
-    <!-- 音声コマンドヘルプ -->
-    <div class="cmd-help">
-      <div class="cmd-row"><span>「はい」</span>目数 + 1</div>
-      <div class="cmd-row"><span>「次」</span>次の段へ</div>
-      <div class="cmd-row"><span>「細編み」</span>モード切替</div>
-      <div class="cmd-row"><span>「増やし目」</span>モード切替</div>
-      <div class="cmd-row"><span>「減らし目」</span>モード切替</div>
-      <div class="cmd-row"><span>「戻して」など</span>1つ戻す</div>
-    </div>
 
     <!-- フッターリンク (収益化・ヘルプ) -->
     <div class="footer-links">
@@ -710,7 +851,11 @@
         row: 1,
         stitch: 0,
         subCount: 0, // 0: clear/2回目終了, 1: 1回目終了
-        status: '細編み' // '細編み' | '増やし目' | '減らし目'
+        status: '細編み', // '細編み' | '増やし目' | '減らし目'
+        naviMode: false,
+        naviKoma: 1,
+        naviType: 'inc', // 'inc' | 'dec' | 'none'
+        stitchInRow: 0
       };
 
       let history = []; // Array of previous states for undo
@@ -736,6 +881,18 @@
       const resetCancel = document.getElementById('resetCancel');
       const resetConfirm = document.getElementById('resetConfirm');
       const helpLink = document.getElementById('helpLink');
+
+      // Navi DOM
+      const naviPanel = document.getElementById('naviPanel');
+      const naviToggleBtn = document.getElementById('naviToggleBtn');
+      const naviContent = document.getElementById('naviContent');
+      const naviKomaDec = document.getElementById('naviKomaDec');
+      const naviKomaInc = document.getElementById('naviKomaInc');
+      const naviPatternText = document.getElementById('naviPatternText');
+      const naviTypeInc = document.getElementById('naviTypeInc');
+      const naviTypeDec = document.getElementById('naviTypeDec');
+      const naviTypeNone = document.getElementById('naviTypeNone');
+      const naviLoopStatus = document.getElementById('naviLoopStatus');
 
       // ===== Audio Context for Beep =====
       let audioCtx = null;
@@ -804,6 +961,29 @@
         statusKoma.className = 'status-btn' + (state.status === '細編み' ? ' active-koma' : '');
         statusInc.className = 'status-btn' + (state.status === '増やし目' ? ' active-inc' : '');
         statusDec.className = 'status-btn' + (state.status === '減らし目' ? ' active-dec' : '');
+
+        // Navi Render
+        naviToggleBtn.checked = state.naviMode;
+        if (state.naviMode) {
+          naviContent.classList.add('show');
+          naviPanel.style.borderColor = 'var(--accent-magenta)';
+        } else {
+          naviContent.classList.remove('show');
+          naviPanel.style.borderColor = 'transparent';
+        }
+
+        naviPatternText.textContent = `細編み ${state.naviKoma}`;
+        naviTypeInc.className = 'navi-type-btn' + (state.naviType === 'inc' ? ' active' : '');
+        naviTypeDec.className = 'navi-type-btn' + (state.naviType === 'dec' ? ' active' : '');
+        naviTypeNone.className = 'navi-type-btn' + (state.naviType === 'none' ? ' active' : '');
+
+        const loopLength = state.naviKoma + (state.naviType !== 'none' ? 2 : 0);
+        if (loopLength > 0) {
+          const currentLoop = Math.floor(state.stitchInRow / loopLength) + 1;
+          naviLoopStatus.textContent = `${Math.min(currentLoop, 6)} / 6`;
+        } else {
+          naviLoopStatus.textContent = `- / 6`;
+        }
       }
 
       // ===== Push to History (for Undo) =====
@@ -812,12 +992,54 @@
         if (history.length > MAX_HISTORY) history.shift();
       }
 
+      // ===== Navi Functions =====
+      function updateNaviAutoPattern(row) {
+        if (!state.naviMode) return;
+        if (row === 1) {
+          state.naviKoma = 1;
+          state.naviType = 'none';
+        } else if (row === 2) {
+          state.naviKoma = 0;
+          state.naviType = 'inc';
+        } else {
+          state.naviKoma = row - 2;
+          state.naviType = 'inc';
+        }
+        updateNaviProgress();
+      }
+
+      function updateNaviProgress() {
+        if (!state.naviMode) return;
+        const loopLength = state.naviKoma + (state.naviType !== 'none' ? 2 : 0);
+        if (loopLength === 0) return;
+
+        const currentLoop = Math.floor(state.stitchInRow / loopLength);
+        const rem = state.stitchInRow % loopLength;
+
+        // 次の段への自動送り (6ループ完了時)
+        if (currentLoop >= 6 && rem === 0 && state.stitchInRow > 0) {
+          setTimeout(() => {
+            showFeedback('段が完了しました！次へ進みます');
+            cmdTsugi();
+          }, 400);
+          return;
+        }
+
+        // 次のステータス（編み方）を決める
+        let nextStatus = '細編み';
+        if (rem >= state.naviKoma) {
+          nextStatus = state.naviType === 'inc' ? '増やし目' : '減らし目';
+        }
+        state.status = nextStatus;
+      }
+
       // ===== Commands =====
       function cmdHai() {
         pushHistory();
 
         // 常に目数は+1する
         state.stitch += 1;
+        state.stitchInRow = (state.stitchInRow || 0) + 1;
 
         // 増やし目の場合のサブカウント（1/2か2/2）の切り替え
         if (state.status === '増やし目') {
@@ -829,6 +1051,11 @@
           }
         } else {
           state.subCount = 0;
+        }
+
+        // ナビモード更新
+        if (state.naviMode) {
+          updateNaviProgress();
         }
 
         saveState();
@@ -845,6 +1072,13 @@
         state.row += 1;
         state.stitch = 0;
         state.subCount = 0;
+        state.stitchInRow = 0;
+
+        // ナビモード更新
+        if (state.naviMode) {
+          updateNaviAutoPattern(state.row);
+        }
+
         saveState();
         render();
         // Flash animation
@@ -876,7 +1110,10 @@
       }
 
       function cmdReset() {
-        state = { row: 1, stitch: 0, status: '細編み' };
+        state = { 
+          row: 1, stitch: 0, status: '細編み', subCount: 0,
+          naviMode: false, naviKoma: 1, naviType: 'inc', stitchInRow: 0
+        };
         history = [];
         saveState();
         render();
@@ -916,7 +1153,7 @@
       // ===== Help Link (使い方) =====
       helpLink.addEventListener('click', (e) => {
         e.preventDefault();
-        alert('【使い方】\n\n・マイクボタンを押すと音声認識が開始します。\n・「はい」で目数が+1されます。\n・「次」で次の段へ進みます。\n・「戻して」で1つ前の操作を取り消します。\n・「細編み」「増やし目」「減らし目」でモードを切り替えます。\n\n※画面の「段数」や「目数」を直接タップしてもカウントできます！');
+        alert('【使い方】\n\n・マイクボタンを押すと音声認識が開始します。\n・画面の「段数」や「目数」エリアを直接タップしてもカウントできます！\n\n【基本の音声コマンド】\n・「はい」： 目数を+1する\n・「次」： 次の段へ進む\n・「戻して」「間違えた」： 1つ前の操作を取り消す\n・「細編み」「増やし目」「減らし目」： モードを手動で切り替える\n\n【円編みナビモード】\nON（ピンク色）にすると、段数から推測して次の編み方（「増やし目」など）を自動でナビゲートしてくれます。');
       });
 
       // ===== Status Buttons (Tap to switch) =====
@@ -951,6 +1188,55 @@
         getAudioCtx();
         if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
         cmdTsugi();
+      });
+
+      // ===== Navi Events =====
+      naviToggleBtn.addEventListener('change', (e) => {
+        pushHistory();
+        state.naviMode = e.target.checked;
+        if (state.naviMode) {
+          updateNaviAutoPattern(state.row);
+        }
+        saveState();
+        render();
+      });
+
+      naviKomaDec.addEventListener('click', () => {
+        if (state.naviKoma > 0) {
+          pushHistory();
+          state.naviKoma -= 1;
+          updateNaviProgress();
+          saveState();
+          render();
+        }
+      });
+      naviKomaInc.addEventListener('click', () => {
+        pushHistory();
+        state.naviKoma += 1;
+        updateNaviProgress();
+        saveState();
+        render();
+      });
+      naviTypeInc.addEventListener('click', () => {
+        pushHistory();
+        state.naviType = 'inc';
+        updateNaviProgress();
+        saveState();
+        render();
+      });
+      naviTypeDec.addEventListener('click', () => {
+        pushHistory();
+        state.naviType = 'dec';
+        updateNaviProgress();
+        saveState();
+        render();
+      });
+      naviTypeNone.addEventListener('click', () => {
+        pushHistory();
+        state.naviType = 'none';
+        updateNaviProgress();
+        saveState();
+        render();
       });
 
       // ===== Speech Recognition =====
